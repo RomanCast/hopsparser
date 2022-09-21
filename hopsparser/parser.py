@@ -942,6 +942,7 @@ class BiAffineParser(nn.Module):
                     bert_layers = None
                 lexer = BertLexer.from_pretrained(
                     model_name_or_path=lexer_config["model"],
+                    use_auth_token=lexer_config.get("use_auth_token", False),
                     layers=bert_layers,
                     subwords_reduction=lexer_config.get("subwords_reduction", "first"),
                     weight_layers=lexer_config.get("weighted", False),

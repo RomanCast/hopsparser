@@ -874,16 +874,16 @@ class BertLexer(nn.Module):
 
     @classmethod
     def from_pretrained(
-        cls: Type[_T_BertLexer], model_name_or_path: Union[str, pathlib.Path], **kwargs
+        cls: Type[_T_BertLexer], model_name_or_path: Union[str, pathlib.Path], use_auth_token: bool, **kwargs
     ) -> _T_BertLexer:
         try:
-            model = transformers.AutoModel.from_pretrained(model_name_or_path)
+            model = transformers.AutoModel.from_pretrained(model_name_or_path, use_auth_token=use_auth_token)
         except OSError:
-            config = transformers.AutoConfig.from_pretrained(model_name_or_path)
+            config = transformers.AutoConfig.from_pretrained(model_name_or_path, use_auth_token=use_auth_token)
             model = transformers.AutoModel.from_config(config)
 
         tokenizer = transformers.AutoTokenizer.from_pretrained(
-            model_name_or_path, use_fast=True
+            model_name_or_path, use_auth_token=use_auth_token, use_fast=True
         )
         # Shim for the weird idiosyncrasies of the RoBERTa tokenizer
         if isinstance(
@@ -894,7 +894,7 @@ class BertLexer(nn.Module):
                 model_name_or_path, use_fast=True, add_prefix_space=True
             )
 
-        return cls(model=model, tokenizer=tokenizer, **kwargs)
+        return cls(model=model, use_auth_token=use_auth_token, tokenizer=tokenizer, **kwargs)
 
 
 LEXER_TYPES: BidirectionalMapping[str, Type[Lexer]] = bidict(
