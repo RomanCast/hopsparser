@@ -894,7 +894,7 @@ class BertLexer(nn.Module):
                 model_name_or_path, use_fast=True, add_prefix_space=True
             )
 
-        return cls(model=model, use_auth_token=use_auth_token, tokenizer=tokenizer, **kwargs)
+        return cls(model=model, tokenizer=tokenizer, **kwargs)
 
 
 LEXER_TYPES: BidirectionalMapping[str, Type[Lexer]] = bidict(
