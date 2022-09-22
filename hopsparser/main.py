@@ -176,6 +176,11 @@ def train(
         syst_devset = evaluator.load_conllu_file(parsed_devset_path)
         dev_metrics = evaluator.evaluate(gold_devset, syst_devset)
         metrics_table.add_row("Dev", *(f"{100*dev_metrics[m].f1:.2f}" for m in metrics))
+        json.dump(
+            {m: v.f1 for m, v in dev_metrics.items()},
+            open(output_dir / "eval_metrics.json", "w"),
+            indent=4,
+        )
 
     if test_file is not None:
         parsed_testset_path = output_dir / f"{test_file.stem}.parsed.conllu"
@@ -185,6 +190,11 @@ def train(
         test_metrics = evaluator.evaluate(gold_testset, syst_testset)
         metrics_table.add_row(
             "Test", *(f"{100*test_metrics[m].f1:.2f}" for m in metrics)
+        )
+        json.dump(
+            {m: v.f1 for m, v in test_metrics.items()},
+            open(output_dir / "test_metrics.json", "w"),
+            indent=4,
         )
 
     if metrics_table.rows:
