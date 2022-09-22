@@ -165,6 +165,8 @@ class DepGraph:
                 mwe_start, mwe_end = row[0].split("-")
                 mwe_ranges.append(MWERange(int(mwe_start), int(mwe_end), row[1]))
                 continue
+            if "." in row[0]: # Empty node
+                continue
             if len(row) < 2:
                 raise ValueError("Too few columns to build a DepNode")
             elif len(row) < 10:
