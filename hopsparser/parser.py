@@ -1067,7 +1067,7 @@ class DependencyDataset:
             self.treelist = list(self.treelist)
         if not self.encoded_trees:
             self.encode()
-        N = len(self.treelist)
+        N = len(self.encoded_trees)
         order = list(range(N))
         if shuffle_data:
             random.shuffle(order)
