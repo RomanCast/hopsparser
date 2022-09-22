@@ -1054,7 +1054,8 @@ class DependencyDataset:
     def encode(self):
         self.encoded_trees = []
         for tree in self.treelist:
-            self.encoded_trees.append(self.parser.encode_tree(tree))
+            if (encoded_tree := self.parser.encode_tree(tree)) is not None:
+                self.encoded_trees.append(encoded_tree)
 
     def make_batches(
         self,
