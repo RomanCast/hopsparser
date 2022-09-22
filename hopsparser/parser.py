@@ -623,7 +623,7 @@ class BiAffineParser(nn.Module):
 
     @overload
     def encode_sentence(
-        self, words: Sequence[str], strict: Literal[True] = False
+        self, words: Sequence[str], strict: Literal[True] = True
     ) -> EncodedSentence:
         pass
 
@@ -634,7 +634,7 @@ class BiAffineParser(nn.Module):
         pass
 
     def encode_sentence(
-        self, words: Sequence[str], strict: bool = False
+        self, words: Sequence[str], strict: bool = True
     ) -> Optional[EncodedSentence]:
         words_with_root = [DepGraph.ROOT_TOKEN, *words]
         try:
