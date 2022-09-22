@@ -623,7 +623,7 @@ class BiAffineParser(nn.Module):
 
     @overload
     def encode_sentence(
-        self, words: Sequence[str], strict: Literal[True] = True
+        self, words: Sequence[str], strict: Literal[True] = False
     ) -> EncodedSentence:
         pass
 
@@ -634,7 +634,7 @@ class BiAffineParser(nn.Module):
         pass
 
     def encode_sentence(
-        self, words: Sequence[str], strict: bool = True
+        self, words: Sequence[str], strict: bool = False
     ) -> Optional[EncodedSentence]:
         words_with_root = [DepGraph.ROOT_TOKEN, *words]
         try:
@@ -676,8 +676,10 @@ class BiAffineParser(nn.Module):
             sent_lengths=sent_lengths,
         )
 
-    def encode_tree(self, tree: DepGraph) -> EncodedTree:
+    def encode_tree(self, tree: DepGraph) -> Optional[EncodedTree]:
         sentence = self.encode_sentence(tree.words[1:])
+        if sentence is None:
+            return None
         tag_idxes = torch.tensor(
             [
                 self.tagset.get(tag, self.LABEL_PADDING)
@@ -714,7 +716,7 @@ class BiAffineParser(nn.Module):
         encoded_trees: Optional[Sequence[EncodedTree]] = None,
     ) -> DependencyBatch:
         if encoded_trees is None:
-            encoded_trees = [self.encode_tree(tree) for tree in trees]
+            encoded_trees = [encoded_tree for tree in trees if (encoded_tree := self.encode_tree(tree)) is not None]
         # FIXME: typing err here because we need to constraint that the encoded trees are all
         # encoded by the same lexer
         sentences = self.batch_sentences([tree.sentence for tree in encoded_trees])
